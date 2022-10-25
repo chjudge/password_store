@@ -32,7 +32,7 @@ fn main() {
                     "add-user" => {
                         if !user.is_none() && !password.is_none(){
                             password_store::add(user.unwrap().to_owned(), password.unwrap().to_owned())
-                        } else if !user.is_none(){
+                        } else if user.is_none(){
                             eprintln!("Error: No user specified for command 'add-user'")
                         } else {
                             eprintln!("Error: No password specified for command 'add-user'")
@@ -42,7 +42,7 @@ fn main() {
                     "check-password" => {
                         if !user.is_none() && !password.is_none(){
                             password_store::check(user.unwrap().to_owned(), password.unwrap().to_owned())
-                        } else if !user.is_none(){
+                        } else if user.is_none(){
                             eprintln!("Error: No user specified for command 'check-password'")
                         } else {
                             eprintln!("Error: No password specified for command 'check-password'")
