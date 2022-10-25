@@ -1,7 +1,7 @@
 use base64;
 use rand::{thread_rng, Rng};
 use sha2::{Sha512, Digest};
-use std::{fs::File, fmt::format};
+use std::{fs::File, fmt::format, io::Write};
 
 pub(crate) const PATH: &str = "Project2PW.txt";
 
@@ -10,13 +10,9 @@ pub(crate) const PATH: &str = "Project2PW.txt";
 
 // }
 
-// fn write_line(line: String) {
-//     std::fs::write(PATH, line);
-// }
-
 //adds a user to the password store
 pub(crate) fn add(user: String, password: String) {
-    println!("add");
+    println!("add"); 
 
     let rand: String = thread_rng()
         .sample_iter(&rand::distributions::Alphanumeric)
@@ -33,7 +29,17 @@ pub(crate) fn add(user: String, password: String) {
 
     let hash = base64::encode(hasher.finalize());
 
-    println!("{user}:$6${salt}${hash}");
+    let out = format!("{user}:$6${salt}${hash}");
+    let mut file = std::fs::OpenOptions::new()
+        .write(true)
+        .append(true)
+        .open("Project2PW.txt") 
+        .unwrap();
+
+    if let Err(e) = writeln!(file, "{}", out) {
+        eprintln!("Couldn't write to file: {}", e);
+    }
+
 }
 
 pub(crate) fn check(user: String, password: String) {

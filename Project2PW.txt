@@ -3,3 +3,6 @@ passwords
 are
 cool
 i steal them
+heston:$6$ZkpRSW5ySUU=$MEphOIH2HUYZJgj92QnbGHZNLh7CtIv3qlWb6KynF08aiBCoVv/iWFQSnYDtaf2hXPI9XdgK2F3wDV6Rw/88tw==
+clayton:$6$NlRNMkpHeGw=$ymmyOr2XS/2g8aXKpCd0rbwi8dMbk0q6bpOEua2CpSVxP848TQlfcaUq4gW/lj+DwWWwWudyLM1jnJH1YMaZrQ==
+tony:$6$VGlLUzhEaVU=$Yv7qNuEd6+BraGN74+dey1nR+OIz1AFAA+iOggmAKq1Jf6ALRrUwZfIsjAaYk1b8vUVffd9LQypU6yUDEe93IQ==
