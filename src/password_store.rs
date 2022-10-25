@@ -54,9 +54,9 @@ pub(crate) fn check(user: String, password: String) {
     let re = Regex::new(r"(?P<user>[a-zA-Z_\-0-9]+):$6$(?P<salt>[A-Za-z\d+/=]+)$(?P<pass>[A-Za-z\d+/=]+)").unwrap();
     let correct = read_file()
     .iter()
-    .any(|st| {
+    .any(|text| {
         let caps = re.captures(text).unwrap();
-        return user == caps["user"] && hash_pass(password, caps["salt"]) == caps["pass"];
+        return user == caps["user"].to_string() && hash_pass(password, caps["salt"]) == caps["pass"].to_string();
     });
     if correct {
         println!("Password is good!");
