@@ -72,10 +72,12 @@ pub(crate) fn remove(user: String) {
 pub(crate) fn print() {
     let lines = read_file();
 
+    println!();
     for line in lines{
-        // println!("{}", line)
-        animate_text(&line, 50)
+        println!();
+        animate_text(&line, 30);
     }
+    println!();
 }
 
 // function that animates the text
