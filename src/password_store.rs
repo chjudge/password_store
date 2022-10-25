@@ -1,5 +1,6 @@
 use base64;
 use rand::{thread_rng, Rng};
+use regex::Regex;
 use sha2::{Digest, Sha512};
 use std::{fmt::format, fs::File, io::Write, fs::OpenOptions};
 
@@ -24,6 +25,13 @@ fn write_line(line: String) {
     }
 }
 
+fn hash_pass(pass: String, salt: String) -> String {
+    let mut hasher = Sha512::new();
+    hasher.update(password + &salt);
+
+    return hash = base64::encode(hasher.finalize());
+}
+
 //adds a user to the password store
 pub(crate) fn add(user: String, password: String) {
     println!("add");
@@ -36,17 +44,25 @@ pub(crate) fn add(user: String, password: String) {
 
     let salt = base64::encode(rand);
 
-    let mut hasher = Sha512::new();
-    hasher.update(password + &salt);
-
-    let hash = base64::encode(hasher.finalize());
+    let hash = hash_pass(password, salt);
 
     let out = format!("{user}:$6${salt}${hash}");
     write_line(out);
 }
 
 pub(crate) fn check(user: String, password: String) {
-    println!("check")
+    let re = Regex::new(r"(?P<user>[a-zA-Z_\-0-9]+):$6$(?P<salt>[A-Za-z\d+/=]+)$(?P<pass>[A-Za-z\d+/=]+)").unwrap();
+    let correct = read_file()
+    .iter()
+    .any(|st| {
+        let caps = re.captures(text).unwrap();
+        return user == caps["user"] && hash_pass(password, caps["salt"]) == caps["pass"];
+    });
+    if correct {
+        println!("Password is good!");
+        return;
+    }
+    println!("Username pass combination is no good.")
 }
 
 pub(crate) fn remove(user: String) {
