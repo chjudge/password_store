@@ -44,7 +44,7 @@ pub(crate) fn add(user: String, password: String) {
 
     let salt = base64::encode(rand);
 
-    let hash = hash_pass(password, salt);
+    let hash = hash_pass(password, salt.to_owned());
 
     let out = format!("{user}:$6${salt}${hash}");
     write_line(out);
