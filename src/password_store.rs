@@ -25,6 +25,18 @@ fn write_line(line: String) {
     }
 }
 
+fn clear_file() {
+    let mut file = OpenOptions::new()
+        .write(true)
+        .append(false)
+        .open(PATH)
+        .unwrap();
+
+    if let Err(e) = write!(file, "") {
+        eprintln!("Couldn't write to file: {}", e);
+    }
+}
+
 fn hash_pass(password: String, salt: String) -> String {
     let mut hasher = Sha512::new();
     hasher.update(password + &salt);
@@ -66,7 +78,18 @@ pub(crate) fn check(user: String, password: String) {
 }
 
 pub(crate) fn remove(user: String) {
-    println!("remove")
+    clear_file();
+    let re = Regex::new(r"(?P<user>[a-zA-Z_\-0-9]+):$6$(?P<salt>[A-Za-z\d+/=]+)$(?P<pass>[A-Za-z\d+/=]+)").unwrap();
+    for line in read_file() {
+        let caps = re.captures(&line).unwrap();
+            if user != caps["user"].to_string() {
+                let u  = caps["user"].to_string();
+                let s = caps["salt"].to_string();
+                let h = caps["pass"].to_string();
+                let out = format!("{u}:$6${s}${h}");
+                write_line(out);
+            }
+    };
 }
 
 pub(crate) fn print() {
