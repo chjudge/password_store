@@ -25,11 +25,11 @@ fn write_line(line: String) {
     }
 }
 
-fn hash_pass(pass: String, salt: String) -> String {
+fn hash_pass(password: String, salt: String) -> String {
     let mut hasher = Sha512::new();
     hasher.update(password + &salt);
 
-    return hash = base64::encode(hasher.finalize());
+    return base64::encode(hasher.finalize());
 }
 
 //adds a user to the password store
