@@ -56,7 +56,7 @@ pub(crate) fn check(user: String, password: String) {
     .iter()
     .any(|text| {
         let caps = re.captures(text).unwrap();
-        return user == caps["user"].to_string() && hash_pass(password, caps["salt"]) == caps["pass"].to_string();
+        return user == caps["user"].to_string() && hash_pass(password, caps["salt"].to_string()) == caps["pass"].to_string();
     });
     if correct {
         println!("Password is good!");
