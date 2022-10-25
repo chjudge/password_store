@@ -2,7 +2,7 @@ use base64;
 use rand::{thread_rng, Rng};
 use regex::Regex;
 use sha2::{Digest, Sha512};
-use std::{fmt::format, fs::File, io::Write, fs::OpenOptions};
+use std::{io::Write, fs::OpenOptions};
 
 pub(crate) const PATH: &str = "Project2PW.txt";
 
@@ -93,12 +93,12 @@ pub(crate) fn remove(user: String) {
 }
 
 pub(crate) fn print() {
-    // let lines = read_file();
+    let lines = read_file();
 
-    // for line in lines{
-    //     // println!("{}", line)
-    //     animate_text(&line, 50)
-    // }
+    for line in lines{
+        // println!("{}", line)
+        animate_text(&line, 50)
+    }
 }
 
 // function that animates the text
