@@ -1,3 +1,4 @@
+use regex::Regex;
 mod password_store;
 
 fn main() {
@@ -27,12 +28,19 @@ fn main() {
                 let cmd = args.next().unwrap();
                 let user = args.next();
                 let password = args.next();
+                let user_re = Regex::new(r"^[a-zA-Z_\-0-9]+$").unwrap();
 
                 match cmd {
                     "add-user" => {
                         if !user.is_none() && !password.is_none(){
-                            password_store::add(user.unwrap().to_owned(), password.unwrap().to_owned())
-                        } else if user.is_none(){
+                            if user_re.is_match(user.unwrap()) {
+                                password_store::add(user.unwrap().to_owned(), password.unwrap().to_owned())
+                            }
+                            else {
+                                eprintln!("Error: Invalid username for command 'add-user'")
+                            }
+                        }
+                        else if user.is_none(){
                             eprintln!("Error: No user specified for command 'add-user'")
                         } else {
                             eprintln!("Error: No password specified for command 'add-user'")
