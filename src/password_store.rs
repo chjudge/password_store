@@ -28,7 +28,7 @@ fn write_line(line: String) {
 fn clear_file() {
     let mut file = OpenOptions::new()
         .write(true)
-        .append(false)
+        .truncate(true)
         .open(PATH)
         .unwrap();
 
@@ -63,10 +63,11 @@ pub(crate) fn add(user: String, password: String) {
 }
 
 pub(crate) fn check(user: String, password: String) {
-    let re = Regex::new(r"(?P<user>[a-zA-Z_\-0-9]+):$6$(?P<salt>[A-Za-z\d+/=]+)$(?P<pass>[A-Za-z\d+/=]+)").unwrap();
+    let re = Regex::new(r"(?P<user>[a-zA-Z_\-0-9]+):\$6\$(?P<salt>[A-Za-z\d+/=]+)\$(?P<pass>[A-Za-z\d+/=]+)").unwrap();
     let correct = read_file()
     .iter()
     .any(|text| {
+        if text == "" {return false};
         let caps = re.captures(text).unwrap();
         return user == caps["user"].to_string() && hash_pass(password.to_owned(), caps["salt"].to_string()) == caps["pass"].to_string();
     });
@@ -78,9 +79,11 @@ pub(crate) fn check(user: String, password: String) {
 }
 
 pub(crate) fn remove(user: String) {
+    let lines = read_file();
     clear_file();
-    let re = Regex::new(r"(?P<user>[a-zA-Z_\-0-9]+):$6$(?P<salt>[A-Za-z\d+/=]+)$(?P<pass>[A-Za-z\d+/=]+)").unwrap();
-    for line in read_file() {
+    let re = Regex::new(r"(?P<user>[a-zA-Z_\-0-9]+):\$6\$(?P<salt>[A-Za-z\d+/=]+)\$(?P<pass>[A-Za-z\d+/=]+)").unwrap();
+    for line in lines {
+        if &line == "" {continue};
         let caps = re.captures(&line).unwrap();
             if user != caps["user"].to_string() {
                 let u  = caps["user"].to_string();
