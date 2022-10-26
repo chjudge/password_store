@@ -135,7 +135,7 @@ pub(crate) fn print() {
     println!();
     for line in lines{
         println!();
-        animate_text(&line, 30);
+        animate_text(&line, 5);
     }
     println!();
 }
