@@ -4,16 +4,25 @@ use regex::Regex;
 use sha2::{Digest, Sha512};
 use std::{io::Write, fs::OpenOptions};
 
+//Constant variable that stores the path to the password file
 pub(crate) const PATH: &str = "Project2PW.txt";
 
+/*
+    Helper method that reads in the whole file, splits it into lines,
+     and collects them into a vector of Strings
+ */
 fn read_file() -> Vec<String> {
     return std::fs::read_to_string(PATH)
-        .expect("File should exist prior to this being called")
+        .unwrap_or("".to_string())
         .split('\n')
         .map(|x| x.to_string())
         .collect();
 }
 
+/*
+    Helper method that opens the file
+    and appends the vairable line to the file
+*/
 fn write_line(line: String) {
     let mut file = OpenOptions::new()
         .append(true)
@@ -25,6 +34,10 @@ fn write_line(line: String) {
     }
 }
 
+/*
+    Clears the entire file by 
+    overwriting it with an empty string
+*/
 fn clear_file() {
     let mut file = OpenOptions::new()
         .write(true)
@@ -37,6 +50,10 @@ fn clear_file() {
     }
 }
 
+/*
+    Hashes the given password with addition of 
+    the given salt using SHA512 and returns the base64 encoding
+*/
 fn hash_pass(password: String, salt: String) -> String {
     let mut hasher = Sha512::new();
     hasher.update(password + &salt);
@@ -44,7 +61,9 @@ fn hash_pass(password: String, salt: String) -> String {
     return base64::encode(hasher.finalize());
 }
 
-//adds a user to the password store
+/*
+    Adds the given user and hashed password to the file
+*/
 pub(crate) fn add(user: String, password: String) {
     println!("add");
 
@@ -62,13 +81,19 @@ pub(crate) fn add(user: String, password: String) {
     write_line(out);
 }
 
+/*
+    Checks to make sure the given password matches
+    the given user's actual password
+*/
 pub(crate) fn check(user: String, password: String) {
+    // Regular expression used to extract the username, salt, and password
     let re = Regex::new(r"(?P<user>[a-zA-Z_\-0-9]+):\$6\$(?P<salt>[A-Za-z\d+/=]+)\$(?P<pass>[A-Za-z\d+/=]+)").unwrap();
     let correct = read_file()
     .iter()
     .any(|text| {
         if text == "" {return false};
         let caps = re.captures(text).unwrap();
+        // checks the password hashes are the same
         return user == caps["user"].to_string() && hash_pass(password.to_owned(), caps["salt"].to_string()) == caps["pass"].to_string();
     });
     if correct {
@@ -78,9 +103,14 @@ pub(crate) fn check(user: String, password: String) {
     println!("Username pass combination is no good.")
 }
 
+/*
+    Removes the user matching the given string from
+    the file of users and hashed passwords
+*/
 pub(crate) fn remove(user: String) {
     let lines = read_file();
     clear_file();
+    // Regular expression used to extract the username, salt, and hashed password
     let re = Regex::new(r"(?P<user>[a-zA-Z_\-0-9]+):\$6\$(?P<salt>[A-Za-z\d+/=]+)\$(?P<pass>[A-Za-z\d+/=]+)").unwrap();
     for line in lines {
         if &line == "" {continue};
@@ -95,6 +125,10 @@ pub(crate) fn remove(user: String) {
     };
 }
 
+/*
+    Prints the file of users and hashed passwords
+    out to the console screen (animates the text)
+*/
 pub(crate) fn print() {
     let lines = read_file();
 
